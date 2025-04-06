@@ -1,0 +1,213 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+header {
+    background-color: #4aa1ee;
+    color: white;
+    text-align: center;
+    padding: 1em;
+}
+
+nav {
+    background-color: #333;
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+}
+
+nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+}
+
+nav ul li {
+    position: relative;
+    margin: 0 15px;
+    text-align: center;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: white;
+    padding: 10px 15px;
+}
+
+nav ul li a:hover {
+    background-color: #e01111;
+}
+
+nav ul li ul {
+    display: none;
+    position: absolute;
+    background-color: #444;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    top: 100%;
+    left: 0;
+    min-width: 150px;
+}
+
+nav ul li ul li a {
+    padding: 10px 15px;
+}
+
+nav ul li ul li a:hover {
+    background-color: #575757;
+}
+
+nav ul li:hover ul {
+    display: block;
+}
+
+section {
+    margin: 20px;
+}
+
+.filter-section {
+    text-align: center;
+    background: rgb(134, 192, 229);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 20px auto;
+    max-width: 800px;
+}
+
+/* Fixed map styling */
+#interactiveMap {
+    position: fixed;
+    top: 100px;
+    right: 20px;
+    width: 400px;
+    height: 400px;
+    border-radius: 10px;
+    z-index: 1000;
+    will-change: transform;
+}
+
+/* Air Quality Graph Section */
+.graph-section {
+    text-align: center;
+    margin: 20px;
+}
+
+#airQualityGraph {
+    width: 90%;  /* Adjust the width */
+    height: 300px;  /* Adjust the height */
+    margin: 0 auto;
+}
+
+.graph-section h2 {
+    color: black;  /* Set the text color to black */
+    font-weight: bold;  /* Make the text bold */
+}
+
+/* Causes of Pollution Section Styling */
+.pollution-causes {
+    text-align: center; /* Centers text */
+    background-color: #150723; /* Matches other sections */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 800px;
+    margin: auto; /* Centers horizontally */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Centers the section */
+    width: 90%; /* Ensures responsiveness */
+}
+
+/* Larger text styling */
+.pollution-causes h2 {
+    font-size: 28px; /* Larger heading */
+    color: white;
+}
+
+.pollution-causes p {
+    font-size: 18px; /* Larger paragraph text */
+    line-height: 1.6;
+    color: white;
+}
+
+/* Pollution Information Styling */
+.pollution-info {
+    background-color: #a745ed; /* Adjusted color */
+    color: #fb0808;
+    padding: 20px;
+    flex: 1;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Corrected Image Styling */
+.pollution-images {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 40px;
+    margin-top: 20px;
+    text-align: center;
+}
+
+.pollution-image-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 30%;
+    max-width: 320px;
+}
+
+.pollution-image-container img {
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    height: auto;
+}
+
+.pollution-image-container p {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #d42828;
+}
+
+/* Table Styling */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    text-align: center;
+}
+
+table thead th {
+    background-color: #5a92c2; /* Adjusted for better contrast */
+    color: white;
+    padding: 10px;
+}
+
+table tbody td {
+    padding: 10px;
+}
+
+/* Button Styling */
+.refresh-button {
+    background-color: #de4646;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.refresh-button:hover {
+    background-color: #f14545;
+}

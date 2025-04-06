@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bristol Air Quality Monitoring</title>
+  <!-- Include Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <style>
+    body {
+      font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif, sans-serif;
+      text-size-adjust: 80;
+      margin: 0; 
+      padding: 0;
+      background-color: #edeef3;
+    }
+    header {
+      background-color: #564991;
+      color: white;
+      text-align: center;
+      padding: 1em;
+    }
+    nav {
+      background-color: #333;
+      display: flex;
+      justify-content: center;
+      padding: 10px;
+    }
+    nav ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+    }
+    nav ul li {
+      position: relative;
+      margin: 0 15px;
+      text-align: center;
+    }
+    nav ul li a {
+      text-decoration: none;
+      color: white;
+      padding: 10px 15px;
+    }
+    nav ul li a:hover {
+      background-color: #e01111;
+    }
+    nav ul li ul {
+      display: none;
+      position: absolute;
+      background-color: #444;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      top: 100%;
+      left: 0;
+      min-width: 150px;
+    }
+    nav ul li ul li a {
+      padding: 10px 15px;
+    }
+    nav ul li ul li a:hover {
+      background-color: #575757;
+    }
+    nav ul li:hover ul {
+      display: block;
+    }
+    section {
+      margin: 20px;
+    }
+    .filter-section {
+      text-align: center;
+      background: rgb(134, 192, 229);
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      margin: 20px auto;
+      max-width: 800px;
+    }
+    /* Leaflet map container styling */
+    #interactiveMap {
+      width: 70%;
+      height: 300px;
+      margin: 20px auto;
+      border-radius: 10px;
+    }
+    .refresh-button {
+      background-color: #de4646;
+      color: rgb(0, 0, 0);
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    .refresh-button:hover {
+      background-color: #f14545;
+    }
+    .graph-section {
+      text-align: center;
+    }
+    /* Increased chart size */
+    #airQualityGraph {
+      width: 500px;
+      height: 250px;
+      margin: 0 auto;
+    }
+    /* Container to display the two pollution info sections side by side */
+    .pollution-info-wrapper {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      max-width: 800px;
+      margin: 20px auto;
+      gap: 20px;
+    }
+    /* Pollution information box styling with changed colour */
+    .pollution-info {
+      background-color: #ffffe0;
+      color: #333;
+      padding: 20px;
+      flex: 1;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    .pollution-info h2 {
+      margin-top: 0;
+    }
+    /* Contact information section styling */
+    .contact {
+      background-color: #fff;
+      padding: 20px;
+      max-width: 800px;
+      margin: 20px auto;
+      border-radius: 10px;
+      box-shadow: 0px 4px 8px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    .contact h2 {
+      margin-top: 0;
+    }
+    .contact ul {
+      list-style: none;
+      padding: 0;
+    }
+    .contact li {
+      margin: 10px 0;
+      font-size: 16px;
+    }
+    .contact a {
+      color: #4aa1ee;
+      text-decoration: none;
+    }
+    .contact a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Bristol Air Quality Monitoring</h1>
+  </header>
+  <nav>
+    <ul>
+      <li>
+        <a href="#">Menu</a>
+        <ul>
+          <li><a href="#home">Home</a></li>
+          <li><a href="#about">Browse</a></li>
+        </ul>
+      </li>
+    </ul>
+  </nav>
+  
+  <!-- Filter section for selecting location and pollutant -->
+  <section class="filter-section">
+    <h2>Search & Filter</h2>
+    <div>
+      <label for="location">Location:</label>
+      <select id="location">
+        <option value="city-center">City Center</option>
+        <option value="north">North Bristol</option>
+        <option value="south">South Bristol</option>
+        <option value="west">West Bristol</option>
+      </select>
+      <!-- Pollutant Icon/Button -->
+      <button id="pollutantIcon" style="cursor:pointer;">Show Pollutant Areas</button>
+    </div>
+    <button class="refresh-button" onclick="refreshData()">Refresh Data</button>
+  </section>
+ <!-- Causes of Pollution Section -->
+<section class="pollution-causes">
+    <h2>What Causes Pollution in Bristol?</h2>
+    <p>
+      Pollution in Bristol is primarily caused by urban traffic, industrial activities, and residential heating. 
+      Diesel vehicles contribute significantly to nitrogen dioxide levels, while particulate matter originates from construction sites, road dust, and burning fuels. 
+      The city's geography and weather patterns can also trap pollutants, exacerbating air quality issues.
+    </p>
+</section>
+<div class="pollution-images">
+  <figure>
+    <img src="carpoll.jpg" alt="Polluting Diesel Bus" width="400">
+    <figcaption>Diesel Bus Pollution</figcaption>
+  </figure>
+  <figure>
+    <img src="truckimg.jpg" alt="Heavy Traffic Pollution" width="377">
+    <figcaption>Heavy Traffic Emissions</figcaption>
+  </figure>
+  <figure>
+    <img src="fossilefuel.jpg" alt="Old Diesel Truck Emissions" width="370">
+    <figcaption>Fossil Fuel Combustion</figcaption>
+  </figure>
+  <figure>
+    <img src="bristolair.png" alt="Bristol Air Pollution Effects" width="360">
+    <figcaption>Air Quality Map</figcaption>
+  </figure>
+</div>
+
+  <!-- Interactive Map section using Leaflet -->
+  <section>
+    <h2>Interactive Map</h2>
+    <div id="interactiveMap"></div>
+  </section>
+</head>
+<body>
+    <!-- Sustainable Practices Section -->
+<section class="sustainable-practices">
+    <h2>Sustainable Practices</h2>
+    <p>
+      Everyone can contribute to improving air quality in Bristol by adopting eco-friendly habits. 
+      Small changes in daily routines can have a big impact on reducing pollution.
+    </p>
+    
+    <h3>For Individuals:</h3>
+    <ul>
+      <li>Use public transport, cycle, or walk instead of driving.</li>
+      <li>Switch to energy-efficient appliances and LED lighting.</li>
+      <li>Reduce waste by recycling and composting organic materials.</li>
+      <li>Avoid burning wood or other solid fuels at home.</li>
+    </ul>
+  
+    <h3>For Businesses:</h3>
+    <ul>
+      <li>Encourage remote work and flexible commuting options.</li>
+      <li>Implement sustainable supply chains and reduce packaging waste.</li>
+      <li>Use renewable energy sources and energy-efficient equipment.</li>
+      <li>Promote carpooling and provide incentives for green commuting.</li>
+    </ul>
+  
+    <h3>Community Initiatives:</h3>
+    <p>
+      Local communities and organizations are taking action to reduce air pollution.  
+      Join local clean-up drives, participate in tree-planting initiatives, or support policies promoting sustainability.
+    </p>
+  </section>
+  
+  <title>Sustainable Practices</title>
+  <style>
+    .sustainable-practices {
+      background-color: #d8b4fe; /* Purple background to match pollution info boxes */
+      color: #333;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      max-width: 800px;
+      margin: 20px auto;
+      text-align: left;
+      font-size: 18px; /* Bigger base text */
+      line-height: 1.8; /* Better readability */
+    }
+
+    .sustainable-practices h2 {
+      text-align: center;
+      font-size: 32px; /* Larger main heading */
+      font-weight: bold;
+    }
+
+    .sustainable-practices h3 {
+      text-align: center;
+      font-size: 26px; /* Larger subheadings */
+      font-weight: bold;
+    }
+
+    .sustainable-practices ul {
+      list-style: disc;
+      padding-left: 30px;
+      font-size: 20px; /* Bigger list text */
+    }
+  </style>
+</head>
+<body>
+
+  <section class="sustainable-practices">
+    <h2>Sustainable Practices</h2>
+    <h3>Eco-Friendly Tips for Individuals</h3>
+    <ul>
+      <li>Use public transport or cycle instead of driving.</li>
+      <li>Reduce waste by recycling and composting.</li>
+      <li>Conserve energy by switching off unused appliances.</li>
+      <li>Use reusable bags, bottles, and containers.</li>
+      <li>Support local and sustainable products.</li>
+    </ul>
+
+    <h3>Eco-Friendly Business Initiatives</h3>
+    <ul>
+      <li>Adopt sustainable supply chain practices.</li>
+      <li>Encourage remote working to reduce commuting emissions.</li>
+      <li>Invest in renewable energy sources.</li>
+      <li>Reduce single-use plastics in the workplace.</li>
+      <li>Partner with local environmental organizations.</li>
+    </ul>
+  </section>
+
+</body>
+</html>
+  
+
+  <!-- Air Quality Data Visualization Graph -->
+  <section class="graph-section">
+    <h2>Air Quality Data Visualization</h2>
+    <canvas id="airQualityGraph"></canvas>
+  </section>
+  
+  <!-- Contact Section -->
+  <section class="contact">
+    <h2>Contact Us</h2>
+    <p>If you have any questions or need more information, please get in touch with us:</p>
+    <ul>
+      <li>Email: <a href="mailto:contact@bristolair.com">contact@bristolair.com</a></li>
+      <li>Phone: <strong>+44 1234 567890</strong></li>
+      <li>Twitter: <a href="https://twitter.com/bristolair" target="_blank">@BristolAir</a></li>
+      <li>Facebook: <a href="https://facebook.com/bristolair" target="_blank">BristolAir</a></li>
+      <li>Instagram: <a href="https://instagram.com/bristolair" target="_blank">@BristolAir</a></li>
+    </ul>
+  </section>
+  
+  <!-- Include Leaflet JS -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <!-- Include Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    // Initialize the Leaflet map
+    var map = L.map("interactiveMap").setView([51.4545, -2.5879], 12);
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: "© OpenStreetMap contributors"
+    }).addTo(map);
+
+    // Mapping for location coordinates for directing the map
+    var locationCoordinates = {
+      "city-center": [51.4545, -2.5879],
+      "north": [51.5000, -2.6000],
+      "south": [51.4200, -2.5800],
+      "west": [51.4600, -2.6500]
+    };
+
+    // Event listener for location changes
+    document.getElementById("location").addEventListener("change", function () {
+      var selectedLocation = this.value;
+      var coord = locationCoordinates[selectedLocation];
+      if (coord) {
+        // Center the map on the selected location; adjust zoom level as required.
+        map.setView(coord, 13);
+      }
+    });
+
+    // Dummy pollutant area coordinates (replace with real data as needed)
+    var pollutantAreaCoordinates = {
+      "pm10": [
+        [51.458, -2.585],
+        [51.460, -2.590]
+      ],
+      "pm2.5": [
+        [51.455, -2.580],
+        [51.456, -2.574]
+      ],
+      "ozone": [
+        [51.452, -2.590],
+        [51.451, -2.595]
+      ]
+    };
+
+    // Array to hold any pollutant markers (for easy removal)
+    var pollutantMarkers = [];
+
+    // Event listener for the pollutant icon button click
+    document.getElementById("pollutantIcon").addEventListener("click", function () {
+      // Remove existing pollutant markers from the map
+      pollutantMarkers.forEach(function (marker) {
+        map.removeLayer(marker);
+      });
+      pollutantMarkers = [];
+
+      // For now, this example always uses "pm10"
+      var pollutantValue = "pm10";
+      var coordsList = pollutantAreaCoordinates[pollutantValue] || [];
+
+      // Create a marker for each coordinate and add it to the map
+      coordsList.forEach(function (latlng) {
+        var marker = L.marker(latlng)
+          .addTo(map)
+          .bindPopup("Area with " + pollutantValue.toUpperCase());
+        pollutantMarkers.push(marker);
+      });
+
+      // Optionally adjust the map view to show all pollutant markers
+      if (pollutantMarkers.length > 0) {
+        var group = new L.featureGroup(pollutantMarkers);
+        map.fitBounds(group.getBounds());
+      }
+    });
+
+    // Example air quality graph using Chart.js
+    var ctx = document.getElementById("airQualityGraph").getContext("2d");
+    new Chart(ctx, {
+      type: "line",
+      data: {
+        labels: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+        datasets: [{
+          label: "PM2.5 Levels (µg/m³)",
+          data: [25, 30, 18, 40, 20],
+          backgroundColor: "rgba(75,192,192,0.2)",
+          borderColor: "rgba(75,192,192,1)",
+          borderWidth: 2
+        }]
+      },
+      options: {
+        responsive: false,
+        plugins: {
+          legend: { display: true }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            title: { display: true, text: "PM2.5 Levels (µg/m³)" }
+          },
+          x: {
+            title: { display: true, text: "Days of the Week" }
+          }
+        }
+      }
+    });
+
+    // Placeholder function for refreshing data
+    function refreshData() {
+      alert("Data refreshed!");
+    }
+  </script>
+</body>
+</html>
